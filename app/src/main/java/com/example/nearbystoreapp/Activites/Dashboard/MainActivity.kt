@@ -17,6 +17,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.nearbystoreapp.ui.theme.NearbyStoreAppTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 @Preview
 fun DashboardScreen() {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(color = colorResource(R.color.blue))
     Scaffold(
         bottomBar = {MyBottomBar()}
     ){
@@ -39,6 +42,8 @@ fun DashboardScreen() {
                 .fillMaxSize()
                 .background(color = colorResource(R.color.white))
                 .padding(paddingValues=paddingValues)
-        ){}
+        ){
+            item{TopBar()}
+        }
     }
 }
