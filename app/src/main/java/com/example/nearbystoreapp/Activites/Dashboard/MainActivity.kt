@@ -12,10 +12,17 @@ import androidx.compose.material3.Scaffold
 import com.example.nearbystoreapp.R
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-
+import com.example.nearbystoreapp.Domain.CategoryModel
+import com.example.nearbystoreapp.Repository.DashboardRepository
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.example.nearbystoreapp.ui.theme.NearbyStoreAppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -33,6 +40,20 @@ class MainActivity : ComponentActivity() {
 fun DashboardScreen() {
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(color = colorResource(R.color.blue))
+
+    val viewModel= DashboardRepository()
+    val categories= remember { mutableStateListOf<CategoryModel>() }
+
+    var showCategoryLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCategory().observeForever {
+            categories.clear()
+            categories.addAll(it)
+            showCategoryLoading = false
+        }
+    }
+
     Scaffold(
         bottomBar = {MyBottomBar()}
     ){
@@ -44,6 +65,7 @@ fun DashboardScreen() {
                 .padding(paddingValues=paddingValues)
         ){
             item{TopBar()}
+            item{CategorySection(categories,showCategoryLoading)}
         }
     }
 }
